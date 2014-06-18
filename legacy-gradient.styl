@@ -1,0 +1,66 @@
+// Legacy linear gradient mixin for nib
+
+normalizeFrom(from)
+	if from is a 'color'
+		unshift(colors, from)
+		from = top
+	from
+
+justifyStops(colors, i)
+	len = length(colors) - 1
+	if len is i
+		100%
+	else if i
+		unit(i / len * 100, '%')
+	else
+		0%
+
+normalizeColors(colors)
+	for color, i in colors
+		if length(color) is 1
+			tmp = color[0]
+			color[0] = justifyStops(colors, i)
+			color[1] = tmp
+		else if typeof(color[1]) is 'unit'
+			tmp = color[1]
+			color[1] = color[0]
+			color[0] = tmp
+	colors
+
+webkitFrom(from)
+	if length(from) is 1
+		return left from if from in (top bottom)
+		return from top if from in (left right)
+	else if from[0] in (top bottom)
+		return from[1] from[0]
+
+applyWebkit(color, position)
+	'color-stop(%d, %s)' % (position/100 color)
+
+applySpec(color, position)
+	'%s %s' % (color position)
+
+joinColors(colors, applySyntax)
+	s = ''
+	for color, i in colors
+		s += ', ' if i isnt 0
+		position = color[0]
+		s += applySyntax(color[1], position)
+	unquote(s)
+
+linear-gradient(from, colors...)
+
+	// NORMALIZE
+	from = normalizeFrom(from)
+	colors = normalizeColors(colors)
+
+	// WEBKIT
+	color-start = webkitFrom(from)
+	color-end = webkitFrom(opposite-position(from))
+	color-stops = joinColors(colors, applyWebkit)
+	legacy-syntax = '-webkit-gradient(linear, %s, %s, %s)' % (color-start color-end color-stops)
+	add-property(current-property[0], legacy-syntax)
+
+	// SPEC
+	colors = joinColors(colors, applySpec)
+	'linear-gradient(%s, %s)' % (from colors)
