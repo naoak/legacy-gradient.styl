@@ -1,5 +1,11 @@
 /*! github.com/BYODKM/legacy-gradient.styl | MIT License */
 
+replace(expr, str, val)
+	for i in expr
+		if str is i
+			expr = val
+	expr
+
 normalizeFrom(from)
 	if from is a 'color'
 		unshift(colors, from)
@@ -16,6 +22,7 @@ justifyStops(colors, i)
 		0%
 
 normalizeColors(colors)
+	colors = clone(colors)
 	for color, i in colors
 		if length(color) is 1
 			tmp = color[0]
@@ -59,7 +66,7 @@ linear-gradient(from, colors...)
 	color-end = webkitFrom(opposite-position(from))
 	color-stops = joinColors(colors, applyWebkit)
 	legacy-syntax = '-webkit-gradient(linear, %s, %s, %s)' % (color-start color-end color-stops)
-	add-property(current-property[0], legacy-syntax)
+	add-property(current-property[0], replace(current-property[1], '__CALL__', legacy-syntax))
 
 	// SPEC
 	colors = joinColors(colors, applySpec)
