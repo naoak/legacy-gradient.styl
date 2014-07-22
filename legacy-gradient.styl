@@ -49,12 +49,6 @@ applyWebkit(color, position)
 applySpec(color, position)
 	'%s %s' % (color position)
 
-replace(expr, str, val)
-	for i in expr
-		if str is i
-			expr = val
-	expr
-
 linear-gradient(start, colors...)
 
 	start = normalizeStart(start)
@@ -64,7 +58,7 @@ linear-gradient(start, colors...)
 	color-end = webkitStart(opposite-position(start))
 	color-stops = joinColors(colors, applyWebkit)
 	legacy-syntax = '-webkit-gradient(linear, %s, %s, %s)' % (color-start color-end color-stops)
-	add-property(current-property[0], replace(current-property[1], '__CALL__', legacy-syntax))
+	add-property(current-property[0], legacy-syntax)
 
 	colors = joinColors(colors, applySpec)
 	'linear-gradient(%s, %s)' % (start colors)
