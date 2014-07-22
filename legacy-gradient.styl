@@ -37,8 +37,8 @@ webkitStart(start)
 
 joinColors(colors, applySyntax)
 	s = ''
-	for color, i in colors
-		s += ', ' if i isnt 0
+	for color, index in colors
+		s += ', ' if index isnt 0
 		position = color[0]
 		s += applySyntax(color[1], position)
 	unquote(s)
