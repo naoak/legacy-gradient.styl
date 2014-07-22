@@ -1,51 +1,39 @@
 /*! github.com/BYODKM/legacy-gradient.styl | MIT License */
 
-replace(expr, str, val)
-	for i in expr
-		if str is i
-			expr = val
-	expr
-
-normalizeFrom(from)
-	if from is a 'color'
-		unshift(colors, from)
-		from = top
-	from
-
-justifyStops(colors, i)
-	len = length(colors) - 1
-	if len is i
-		100%
-	else if i
-		unit(i / len * 100, '%')
-	else
-		0%
+normalizeStart(start)
+	if start is a 'color'
+		unshift(colors, start)
+		start = top
+	start
 
 normalizeColors(colors)
 	colors = clone(colors)
-	for color, i in colors
+	for color, index in colors
 		if length(color) is 1
-			tmp = color[0]
-			color[0] = justifyStops(colors, i)
-			color[1] = tmp
+			value = color[0]
+			color[0] = justifyStops(colors, index)
+			color[1] = value
 		else if typeof(color[1]) is 'unit'
-			tmp = color[1]
+			unit = color[1]
 			color[1] = color[0]
-			color[0] = tmp
+			color[0] = unit
 	colors
 
-webkitFrom(from)
-	if length(from) is 1
-		return left from if from in (top bottom)
-		return from top if from in (left right)
-	else if from[0] in (top bottom)
-		return from[1] from[0]
+justifyStops(colors, index)
+	len = length(colors) - 1
+	if len is index
+		100%
+	else if index
+		unit(index / len * 100, '%')
+	else
+		0%
 
-applyWebkit(color, position)
-	'color-stop(%d, %s)' % (position/100 color)
-
-applySpec(color, position)
-	'%s %s' % (color position)
+webkitStart(start)
+	if length(start) is 1
+		return left start if start in (top bottom)
+		return start top if start in (left right)
+	else if start[0] in (top bottom)
+		return start[1] start[0]
 
 joinColors(colors, applySyntax)
 	s = ''
@@ -55,19 +43,28 @@ joinColors(colors, applySyntax)
 		s += applySyntax(color[1], position)
 	unquote(s)
 
-linear-gradient(from, colors...)
+applyWebkit(color, position)
+	'color-stop(%d, %s)' % (position/100 color)
 
-	// NORMALIZE
-	from = normalizeFrom(from)
+applySpec(color, position)
+	'%s %s' % (color position)
+
+replace(expr, str, val)
+	for i in expr
+		if str is i
+			expr = val
+	expr
+
+linear-gradient(start, colors...)
+
+	start = normalizeStart(start)
 	colors = normalizeColors(colors)
 
-	// WEBKIT
-	color-start = webkitFrom(from)
-	color-end = webkitFrom(opposite-position(from))
+	color-start = webkitStart(start)
+	color-end = webkitStart(opposite-position(start))
 	color-stops = joinColors(colors, applyWebkit)
 	legacy-syntax = '-webkit-gradient(linear, %s, %s, %s)' % (color-start color-end color-stops)
 	add-property(current-property[0], replace(current-property[1], '__CALL__', legacy-syntax))
 
-	// SPEC
 	colors = joinColors(colors, applySpec)
-	'linear-gradient(%s, %s)' % (from colors)
+	'linear-gradient(%s, %s)' % (start colors)
