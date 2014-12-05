@@ -1,0 +1,27 @@
+{
+  "name": "legacy-gradient.styl",
+  "version": "0.0.1",
+  "description": "Stylus mixin library [nib](https://github.com/visionmedia/nib/releases) dropped support legacy gradient syntax since v1.0.0. [This mixin](legacy-gradient.styl) is the missing piece for all Stylus lovers.",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BYODKM/legacy-gradient.styl"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BYODKM/legacy-gradient.styl/issues"
+  },
+  "homepage": "https://github.com/BYODKM/legacy-gradient.styl",
+  "devDependencies": {
+    "mocha": "*",
+    "nib": "^1.0.0",
+    "should": "*",
+    "stylus": "0.45.x"
+  }
+}
