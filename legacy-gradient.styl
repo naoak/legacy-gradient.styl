@@ -1,13 +1,15 @@
-/*! github.com/BYODKM/legacy-gradient.styl | MIT License */
+/* github.com/BYODKM/legacy-gradient.styl | MIT License */
 
-normalizeStart(start)
+normalizeStart(start, colors)
 	if start is a 'color'
 		unshift(colors, start)
 		start = top
+	else if start[0] == 'to'
+		shift(start)
+		start = opposite-position(start)
 	start
 
 normalizeColors(colors)
-	colors = clone(colors)
 	for color, index in colors
 		if length(color) is 1
 			value = color[0]
@@ -34,6 +36,15 @@ webkitStart(start)
 		return start top if start in (left right)
 	else if start[0] in (top bottom)
 		return start[1] start[0]
+	else
+		return start
+
+checkColors(colors)
+	for color in colors
+		position = color[0]
+		if unit(position) == 'px'
+			return false
+	true
 
 joinColors(colors, applySyntax)
 	s = ''
@@ -44,10 +55,10 @@ joinColors(colors, applySyntax)
 	unquote(s)
 
 applyWebkit(color, position)
-	'color-stop(%d, %s)' % (position/100 color)
-
-applySpec(color, position)
-	'%s %s' % (color position)
+	// remove percent
+	pos = '%d' % (position/100)
+	// avoid conversion of hsla to rgba
+	'color-stop(' + pos + ', ' + color + ')'
 
 replace(expr, str, val)
 	expr = clone(expr)
@@ -56,16 +67,38 @@ replace(expr, str, val)
 			expr[i] = val
 	expr
 
+removeFill(literals)
+	result = ()
+	for lit in literals
+		if lit != 'fill'
+			push(result, lit)
+	result
+
 linear-gradient(start, colors...)
+	if current-property
+		start = clone(start)
+		colors = clone(colors)
+		start = normalizeStart(start, colors)
+		colors = normalizeColors(colors)
+		if typeof(start) != 'unit'
+			color-start = webkitStart(start)
+			color-end = webkitStart(opposite-position(start))
+			if checkColors(colors)
+				color-stops = joinColors(colors, applyWebkit)
+				legacy-syntax = '-webkit-gradient(linear, %s, %s, %s)' % (color-start color-end color-stops)
+				prop = current-property[0]
+				value = replace(current-property[1], '__CALL__', legacy-syntax)
+				if prop == 'border-image'
+					add-property('-webkit-border-image', removeFill(value))
+				else if prop == 'background' || prop == 'background-image'
+					add-property(prop, value)
+				else
+					warn('-webkit-gradient does not support ' + prop)
+			else
+				warn("-webkit-gradient does not support pixel position.")
+		else
+			warn("-webkit-gradient does not support angle.")
+	else
+		warn("-webkit-gradient does not support variable.")
 
-	start = normalizeStart(start)
-	colors = normalizeColors(colors)
-
-	color-start = webkitStart(start)
-	color-end = webkitStart(opposite-position(start))
-	color-stops = joinColors(colors, applyWebkit)
-	legacy-syntax = '-webkit-gradient(linear, %s, %s, %s)' % (color-start color-end color-stops)
-	add-property(current-property[0], replace(current-property[1], '__CALL__', legacy-syntax))
-
-	colors = joinColors(colors, applySpec)
-	'linear-gradient(%s, %s)' % (start colors)
+	unquote('linear-gradient(' + join(', ',arguments) + ')')

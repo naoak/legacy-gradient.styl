@@ -1,5 +1,5 @@
-@import 'nib/vendor'
-@import 'nib/gradients'
+@import 'nib'
+@import '../../legacy-gradient'
 
 body
   background: linear-gradient(white, black)
@@ -13,9 +13,11 @@ body
 body
   background: linear-gradient(to bottom right, white, black)
 
+// -webkit-gradient does not support angle.
 body
   background: linear-gradient(45deg, white, black)
 
+// -webkit-gradient does not support angle.
 body
   background: linear-gradient(-45deg, white, black)
 
@@ -37,6 +39,7 @@ body
 body
   background: linear-gradient(right bottom, 80.5% hsla(0,0,0,0.5), black)
 
+// -webkit-gradient does not support pixel position.
 body
   background: linear-gradient(right bottom, 20px white, black)
 
@@ -54,6 +57,7 @@ body
 body
   border-image: linear-gradient(top, #fff, #000) 20% fill stretch stretch;
 
+// -webkit-gradient does not support variable.
 gradient-var = linear-gradient(40deg, red, lime)
 
 body
