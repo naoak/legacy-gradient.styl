@@ -63,8 +63,11 @@ applyWebkit(color, position)
 replace(expr, str, val)
 	expr = clone(expr)
 	for e, i in expr
-		if str == e
-			expr[i] = val
+		if length(e) > 1
+			expr[i] = replace(e, str, val)
+		else
+			if str == e
+				expr[i] = val
 	expr
 
 removeFill(literals)

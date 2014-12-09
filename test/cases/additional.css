@@ -1,0 +1,16 @@
+body {
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fff), color-stop(1, #000)) !important;
+  background: -webkit-linear-gradient(top, #fff, #000) !important;
+  background: -moz-linear-gradient(top, #fff, #000) !important;
+  background: -o-linear-gradient(top, #fff, #000) !important;
+  background: -ms-linear-gradient(top, #fff, #000) !important;
+  background: linear-gradient(to bottom, #fff, #000) !important;
+}
+body {
+  background: url("a"), -webkit-gradient(linear, left top, left bottom, color-stop(0, #fff), color-stop(1, #000)) !important;
+  background: url("a"), -webkit-linear-gradient(top, #fff, #000) !important;
+  background: url("a"), -moz-linear-gradient(top, #fff, #000) !important;
+  background: url("a"), -o-linear-gradient(top, #fff, #000) !important;
+  background: url("a"), -ms-linear-gradient(top, #fff, #000) !important;
+  background: url("a"), linear-gradient(to bottom, #fff, #000) !important;
+}
